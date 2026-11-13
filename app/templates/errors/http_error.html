@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}{{ error_title }} | Vinícius & Emanuelle{% endblock %}
+{% block content %}
+<section class="form-page error-page">
+  <img class="error-monogram" src="{{ url_for('static', filename='img/monograma-ve.png') }}" alt="Monograma de Vinícius e Emanuelle">
+  <p class="eyebrow">{{ error_code }}</p>
+  <h1>{{ error_title }}</h1>
+  <p class="section-lead">{{ error_message }}</p>
+  {% if request.path.startswith('/admin') %}
+    <a class="button button-primary" href="{{ url_for('admin.dashboard') }}">Voltar ao painel</a>
+  {% else %}
+    <a class="button button-primary" href="{{ url_for('main.index') }}">Voltar ao início</a>
+  {% endif %}
+</section>
+{% endblock %}

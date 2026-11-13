@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Arquivo muito grande | Vinícius & Emanuelle{% endblock %}
+{% block content %}
+<section class="form-page">
+  <p class="eyebrow">ENVIO NÃO CONCLUÍDO</p>
+  <h1>Arquivo muito<br><em>grande</em></h1>
+  <p class="section-lead">O envio ultrapassou o limite permitido. Para imagens de presentes, use um arquivo de até 5 MB e tente novamente.</p>
+  <a class="button button-primary" href="{{ url_for('admin.dashboard') }}">Voltar ao painel</a>
+</section>
+{% endblock %}

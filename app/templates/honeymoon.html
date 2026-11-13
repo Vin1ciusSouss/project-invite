@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Nossa lua de mel | Vinícius & Emanuelle{% endblock %}
+{% block content %}
+<section class="honeymoon-page">
+  <a class="back-link" href="{{ url_for('main.index') }}#presentes">← Voltar à lista de presentes</a>
+  <p class="eyebrow">UM PEDACINHO DA NOSSA AVENTURA</p>
+  <h1>Cota para<br><em>lua de mel</em></h1>
+  <p class="section-lead">Estamos preparando as malas e sonhando com dias de descanso, passeios e boas histórias. Escolha o valor da sua cota e faça parte dessa aventura com a gente.</p>
+  <div class="honeymoon-visual">
+    {% if honeymoon_photo %}
+      <img src="{{ url_for('static', filename='img/' ~ honeymoon_photo) }}" alt="Uma lembrança de praia e viagem para celebrar a lua de mel">
+    {% else %}
+      <div class="honeymoon-placeholder" role="img" aria-label="Ilustração colorida de céu, mar e sol; a foto dos noivos será adicionada depois">
+        <span class="honeymoon-sun"></span><span class="honeymoon-wave wave-one"></span><span class="honeymoon-wave wave-two"></span>
+        <span class="honeymoon-caption">Sol, mar e uma aventura a dois ☀</span>
+      </div>
+    {% endif %}
+  </div>
+  <section class="honeymoon-payments" aria-labelledby="payment-options-title">
+    <h2 id="payment-options-title">Escolha como presentear</h2>
+    <p class="honeymoon-payment-intro">Um carinho para nossa viagem. Escolha sua cota e a forma de pagamento.</p>
+    <div class="honeymoon-payment-grid">
+      <article class="honeymoon-payment-card">
+        <p class="eyebrow">NUBANK</p>
+        <h3>Pix</h3>
+        <p>Escolha uma cota e presenteie nossa viagem por Pix.</p>
+        <div class="honeymoon-amount-options">
+          {% for option in pix_options %}
+          {% set amount = 'R$ ' ~ ('%.2f'|format(option.amount_cents / 100)|replace('.', ',')) %}
+          <a class="button button-outline honeymoon-amount-option" href="{{ option.url }}" target="_blank" rel="noopener noreferrer" aria-label="Presentear {{ amount }} por Pix no Nubank (nova aba)">
+            <span class="honeymoon-amount-value">{{ amount }}</span>
+            <span>Presentear por Pix</span>
+          </a>
+          {% endfor %}
+        </div>
+      </article>
+      <article class="honeymoon-payment-card">
+        <p class="eyebrow">MERCADO PAGO</p>
+        <h3>Cartão de crédito</h3>
+        <p>Escolha uma cota e confira as opções de parcelamento.</p>
+        <div class="honeymoon-amount-options">
+          {% for option in credit_options %}
+          {% set amount = 'R$ ' ~ ('%.2f'|format(option.amount_cents / 100)|replace('.', ',')) %}
+          <a class="button button-primary honeymoon-amount-option" href="{{ option.url }}" target="_blank" rel="noopener noreferrer" aria-label="Presentear {{ amount }} com cartão de crédito no Mercado Pago (nova aba)">
+            <span class="honeymoon-amount-value">{{ amount }}</span>
+            <span>Presentear com cartão</span>
+          </a>
+          {% endfor %}
+        </div>
+      </article>
+    </div>
+    <p class="small-note">O pagamento é concluído no Nubank ou no Mercado Pago. No cartão, confira as taxas e condições de parcelamento antes de confirmar.</p>
+  </section>
+</section>
+{% endblock %}

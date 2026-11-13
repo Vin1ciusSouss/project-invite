@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Todas as informações do nosso casamento.">
+  <title>{% block title %}Nosso Casamento{% endblock %}</title>
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='img/favicon-ve-dourado.svg', v='gold-1') }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v=config.STYLESHEET_VERSION) }}">
+  <script src="{{ url_for('static', filename='js/notifications.js', v=config.NOTIFICATIONS_VERSION) }}"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="{{ url_for('main.index') }}" aria-label="Vinícius e Emanuelle — início">
+      <img src="{{ url_for('static', filename='img/monograma-ve.png') }}" alt="Monograma V e E">
+      <span>Vinícius <i>&amp;</i> Emanuelle</span>
+    </a>
+    <nav aria-label="Navegação principal">
+      <a href="{{ url_for('main.index') }}#inicio">Início</a>
+      <a href="{{ url_for('main.index') }}#presentes">Presentes</a>
+      <a href="{{ url_for('main.rsvp') }}">Confirmar presença</a>
+    </nav>
+  </header>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flash-wrap">
+        {% for category, message in messages %}
+          <div class="flash {{ category }}" role="{{ 'alert' if category == 'error' else 'status' }}">
+            <span>{{ message }}</span>
+            <button class="flash-close" type="button" aria-label="Fechar notificação">×</button>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <main>{% block content %}{% endblock %}</main>
+  <footer class="site-footer">
+    <p>Feito com carinho para celebrar um dia especial.</p>
+    <span>© {{ 2026 }} Vinícius &amp; Emanuelle</span>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Acesso administrativo | Vinícius & Emanuelle{% endblock %}
+{% block content %}
+<section class="form-page">
+  <a class="back-link" href="{{ url_for('main.index') }}">← Voltar ao site</a>
+  <p class="eyebrow">ÁREA RESTRITA AOS NOIVOS</p>
+  <h1>Painel<br><em>administrativo</em></h1>
+  <p class="section-lead">Entre com a senha compartilhada para ver as confirmações e administrar os presentes.</p>
+  {% if not configured %}<p class="admin-notice">Configure uma senha administrativa antes do primeiro acesso. As instruções estão no README.</p>{% endif %}
+  <form method="post" class="rsvp-form" data-scroll-return="{{ url_for('admin.login') }}" novalidate>
+    {{ form.hidden_tag() }}
+    <div class="field">
+      {{ form.password.label }}
+      {{ form.password(autocomplete="current-password", autofocus=true) }}
+      {% for error in form.password.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+    </div>
+    {{ form.submit(class_="button button-primary") }}
+  </form>
+</section>
+{% endblock %}

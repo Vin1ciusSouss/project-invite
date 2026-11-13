@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% block title %}Confirmar presença | Vinícius & Emanuelle{% endblock %}
+{% block content %}
+<section class="form-page">
+  <a class="back-link" href="{{ url_for('main.index') }}">← Voltar ao início</a>
+  <p class="eyebrow">SERÁ UMA ALEGRIA TER VOCÊ CONOSCO</p>
+  <h1>Confirme sua<br><em>presença</em></h1>
+  <p class="section-lead">Acesse pelo link privado recebido com seu convite ou informe o código abaixo.</p>
+  <p class="rsvp-deadline" role="note">Pedimos que confirme sua presença até <strong><time datetime="2027-02-13">13 de fevereiro de 2027</time></strong>. Sua resposta nos ajuda a preparar esse dia com carinho.</p>
+  <form method="post" action="{{ url_for('main.rsvp', invite_token=invite_group.invite_token) if invite_group else url_for('main.rsvp') }}" class="rsvp-form" data-scroll-return="{{ url_for('main.rsvp', invite_token=invite_group.invite_token) if invite_group else url_for('main.rsvp') }}" novalidate>
+    {{ form.hidden_tag() }}
+    <div class="field">
+      {{ form.invite_code.label }}
+      {{ form.invite_code(placeholder="Cole o código privado do convite", autocomplete="off", **{"data-lookup-url": url_for('main.lookup_invite')}) }}
+      {% for error in form.invite_code.errors %}<small class="field-error" role="alert">{{ error }}</small>{% endfor %}
+    </div>
+    <div id="invite-lookup-message" class="field-help" role="status" aria-live="polite">{% if invite_group %}{% if invite_already_responded %}Este convite já enviou uma confirmação. Para corrigir, fale com os noivos.{% else %}Convite validado. Marque quem irá comparecer.{% endif %}{% endif %}</div>
+    <div id="invite-guest-list" class="invite-guest-list" {% if not invite_group %}hidden{% endif %}>
+      <p class="invite-guest-title">Quem irá comparecer?</p>
+      <p class="invite-guest-help">{% if invite_already_responded %}Este convite já enviou uma confirmação. Para corrigir, fale com os noivos.{% else %}Marque cada pessoa que irá. Quem ficar desmarcado será considerado ausente.{% endif %}</p>
+      <div id="invite-guest-options">
+        {% for guest_name in invite_guest_names %}
+          <label class="invitee-option" for="invitee-{{ loop.index }}">
+            <input id="invitee-{{ loop.index }}" type="checkbox" name="attendee_names" value="{{ guest_name }}" {% if guest_name in selected_guest_names %}checked{% endif %} {% if invite_already_responded %}disabled{% endif %}>
+            <span>{{ guest_name }}</span>
+          </label>
+        {% endfor %}
+      </div>
+      {% for error in attendee_errors %}<small class="field-error" role="alert">{{ error }}</small>{% endfor %}
+    </div>
+
+    <div class="field">
+      {{ form.message.label }}
+      {{ form.message(rows="4", placeholder="Deixe uma mensagem, se desejar...") }}
+      {% for error in form.message.errors %}<small class="field-error" role="alert">{{ error }}</small>{% endfor %}
+    </div>
+    {{ form.submit(class_="button button-primary", disabled=invite_already_responded) }}
+  </form>
+  <p class="small-note">Cada convite privado pode enviar uma única confirmação. Guarde o link para consultar sua resposta.</p>
+</section>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const codeInput = document.getElementById("invite_code");
+    const guestList = document.getElementById("invite-guest-list");
+    const guestOptions = document.getElementById("invite-guest-options");
+    const lookupMessage = document.getElementById("invite-lookup-message");
+    const submitButton = codeInput && codeInput.form.querySelector('[type="submit"]');
+    if (!codeInput || !guestList || !guestOptions || !lookupMessage || !submitButton) return;
+
+    let debounceTimer;
+    let requestNumber = 0;
+    const clearGuestList = () => {
+      guestOptions.replaceChildren();
+      guestList.hidden = true;
+      submitButton.disabled = false;
+    };
+
+    const lookup = () => {
+      window.clearTimeout(debounceTimer);
+      const currentRequest = ++requestNumber;
+      clearGuestList();
+      lookupMessage.textContent = "";
+      const inviteCode = codeInput.value.trim();
+      if (inviteCode.length < 10) return;
+
+      lookupMessage.textContent = "Validando o código do convite...";
+      debounceTimer = window.setTimeout(async () => {
+        try {
+          const endpoint = codeInput.dataset.lookupUrl;
+          const csrfToken = codeInput.form.querySelector('input[name="csrf_token"]').value;
+          const response = await fetch(endpoint, {
+            method: "POST",
+            headers: { "Accept": "application/json", "Content-Type": "application/x-www-form-urlencoded" },
+            body: new URLSearchParams({ codigo: inviteCode, csrf_token: csrfToken }),
+            cache: "no-store"
+          });
+          const result = await response.json();
+          if (currentRequest !== requestNumber) return;
+          if (!response.ok || !result.found) {
+            lookupMessage.textContent = "Não encontramos esse código. Confira o link recebido com os noivos.";
+            return;
+          }
+
+          result.guests.forEach((name, index) => {
+            const label = document.createElement("label");
+            label.className = "invitee-option";
+            label.htmlFor = `invitee-${index + 1}`;
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.name = "attendee_names";
+            checkbox.value = name;
+            checkbox.id = `invitee-${index + 1}`;
+            checkbox.disabled = result.already_responded;
+            const text = document.createElement("span");
+            text.textContent = name;
+            label.append(checkbox, text);
+            guestOptions.append(label);
+          });
+          guestList.hidden = false;
+          submitButton.disabled = result.already_responded;
+          lookupMessage.textContent = result.already_responded
+            ? "Este convite já enviou uma confirmação. Para corrigir, fale com os noivos."
+            : "Convite validado. Marque quem irá comparecer.";
+        } catch (error) {
+          if (currentRequest === requestNumber) {
+            lookupMessage.textContent = "Não foi possível consultar o convite agora. Tente novamente.";
+          }
+        }
+      }, 300);
+    };
+    codeInput.addEventListener("input", lookup);
+    if (guestList.hidden && codeInput.value.trim().length >= 10) lookup();
+  });
+</script>
+{% endblock %}

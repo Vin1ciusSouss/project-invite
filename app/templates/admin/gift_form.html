@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}{{ page_title }} | Vinícius & Emanuelle{% endblock %}
+{% block content %}
+<section class="form-page">
+  <a class="back-link" href="{{ url_for('admin.dashboard') }}">← Voltar ao painel</a>
+  <p class="eyebrow">GESTÃO DA LISTA</p>
+  <h1>{{ page_title }}</h1>
+  <p class="section-lead">Produtos de marketplace abrem a página da loja. As cotas da lua de mel têm valores fixos de R$ 150 e R$ 200, por Pix ou cartão.</p>
+  <form method="post" class="rsvp-form" enctype="multipart/form-data" data-scroll-return="{{ url_for('admin.dashboard') }}" novalidate>
+    {{ form.hidden_tag() }}
+    <div class="field">{{ form.title.label }}{{ form.title(placeholder="Ex.: Cafeteira") }}{% for error in form.title.errors %}<small class="field-error">{{ error }}</small>{% endfor %}</div>
+    <div class="field">{{ form.description.label }}{{ form.description(placeholder="Opcional") }}{% for error in form.description.errors %}<small class="field-error">{{ error }}</small>{% endfor %}</div>
+    <div class="field">{{ form.gift_type.label }}{{ form.gift_type() }}{% for error in form.gift_type.errors %}<small class="field-error">{{ error }}</small>{% endfor %}</div>
+    <div class="field">{{ form.amount.label }}{{ form.amount(placeholder="Ex.: 250.00", step="0.01") }}<small class="field-help">Opcional: deixe em branco para não exibir preço fixo.</small>{% for error in form.amount.errors %}<small class="field-error">{{ error }}</small>{% endfor %}</div>
+    <div class="field">{{ form.external_url.label }}{{ form.external_url(placeholder="https://...", type="url") }}<small class="field-help">Produtos físicos: link direto do anúncio. As cotas da lua de mel usam os links predefinidos.</small>{% for error in form.external_url.errors %}<small class="field-error">{{ error }}</small>{% endfor %}</div>
+    <div class="field">{{ form.emoji.label }}{{ form.emoji(placeholder="Opcional") }}{% for error in form.emoji.errors %}<small class="field-error">{{ error }}</small>{% endfor %}</div>
+    <div class="field">
+      {{ form.image.label }}
+      {% if gift and gift.image_filename %}<img class="gift-image-preview" src="{{ url_for('main.gift_image', filename=gift.image_filename) }}" alt="Imagem atual do presente">{% endif %}
+      <div class="image-upload-control">
+        {{ form.image(id="product-image-input", accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp", aria_describedby="product-image-help") }}
+        <label class="image-upload-button" for="product-image-input">Escolher imagem</label>
+        <span class="image-upload-filename" id="product-image-filename" aria-live="polite">Nenhum arquivo escolhido</span>
+      </div>
+      <small class="field-help" id="product-image-help">Opcional. PNG, JPG/JPEG ou WebP, até 5 MB e 20 megapixels. A imagem aparece no cartão do presente.</small>
+      {% for error in form.image.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+    </div>
+    {% if gift and gift.image_filename %}
+    <div class="field">
+      <label class="image-remove-option">{{ form.remove_image() }} <span>{{ form.remove_image.label.text }}</span></label>
+      <small class="field-help">Marque para remover a imagem enviada e voltar à imagem padrão do presente.</small>
+    </div>
+    {% endif %}
+    {{ form.submit(class_="button button-primary") }}
+  </form>
+</section>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const input = document.getElementById("product-image-input");
+    const filename = document.getElementById("product-image-filename");
+    if (!input || !filename) return;
+    input.addEventListener("change", () => {
+      filename.textContent = input.files.length ? input.files[0].name : "Nenhum arquivo escolhido";
+    });
+  });
+</script>
+{% endblock %}

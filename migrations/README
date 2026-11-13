@@ -1,0 +1,14 @@
+Migrações versionadas do esquema com Flask-Migrate e Alembic.
+
+Aplicar versões pendentes com backup do SQLite existente:
+  python -m flask --app run.py preparar-banco
+
+Consultar versão:
+  python -m flask --app run.py db current
+
+Gerar revisão após alterar modelos e revisar antes de aplicar:
+  python -m flask --app run.py db migrate -m "Descricao da mudanca"
+
+As revisões 0001 e 0003 preservam bancos legados e não possuem downgrade
+automático; restaure o backup para voltar ao estado anterior.
+Não alterar revisões já aplicadas: criar uma revisão nova.

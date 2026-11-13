@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 320" fill="none" stroke="#687052" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+<defs><path id="folha" d="M0 0C-15-8-22-27-16-43C-2-35 5-15 0 0ZM0 0C-6-14-11-28-16-43"/></defs>
+<path d="M30 314C74 255 58 183 105 112C127 79 132 41 146 8M67 247C46 223 25 202 14 171M80 169C108 153 139 139 163 106M111 100C94 83 83 57 84 34"/>
+<use href="#folha" transform="translate(42 291) rotate(-45)"/><use href="#folha" transform="translate(53 267) rotate(45)"/>
+<use href="#folha" transform="translate(62 239) rotate(-34)"/><use href="#folha" transform="translate(63 214) rotate(60)"/>
+<use href="#folha" transform="translate(72 187) rotate(-30)"/><use href="#folha" transform="translate(86 146) rotate(52)"/>
+<use href="#folha" transform="translate(105 113) rotate(-20)"/><use href="#folha" transform="translate(120 84) rotate(55)"/>
+<use href="#folha" transform="translate(132 50) rotate(-15)"/><use href="#folha" transform="translate(140 27) rotate(42) scale(.65)"/>
+<use href="#folha" transform="translate(41 219) rotate(-62) scale(.8)"/><use href="#folha" transform="translate(25 192) rotate(5) scale(.7)"/>
+<use href="#folha" transform="translate(113 150) rotate(78) scale(.8)"/><use href="#folha" transform="translate(143 125) rotate(12) scale(.7)"/>
+<use href="#folha" transform="translate(94 74) rotate(-34) scale(.7)"/>
+</svg>

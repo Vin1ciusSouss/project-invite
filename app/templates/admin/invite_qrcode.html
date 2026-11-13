@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}QR Code do convite | Vinícius & Emanuelle{% endblock %}
+{% block content %}
+<section class="invite-print-page">
+  <div class="invite-print-controls">
+    <a class="back-link" href="{{ url_for('admin.dashboard') }}">← Voltar ao painel</a>
+    <h1>QR Code do convite</h1>
+    <p>Imprima em tamanho real ou baixe a imagem para incluir na arte do convite. Preserve a margem branca e teste a leitura no celular antes de imprimir todos.</p>
+    <div class="hero-actions">
+      <button class="button button-primary" type="button" onclick="window.print()">Imprimir QR Code</button>
+      <a class="button button-outline" href="{{ url_for('admin.invite_qrcode', group_id=invite_group.id, download=1) }}">Baixar PNG</a>
+    </div>
+    <p class="small-note">O QR Code usa o endereço público do site. Compartilhe somente com as pessoas deste convite. Ao renovar o link, será necessário reimprimir.</p>
+  </div>
+  <article class="invite-print-card">
+    <p class="invite-print-names">Vinícius &amp; Emanuelle</p>
+    <p class="invite-print-date">13 de março de 2027</p>
+    <h2>{{ invite_group.reference_name }}</h2>
+    <img src="{{ url_for('admin.invite_qrcode', group_id=invite_group.id, v=invite_group.invite_token) }}" alt="QR Code para confirmar presença" width="600" height="600">
+    <p>Escaneie para confirmar sua presença<br>até 13 de fevereiro de 2027.</p>
+  </article>
+  <p class="invite-print-controls small-note">Destino: <a href="{{ public_invite_url }}" target="_blank" rel="noopener noreferrer">{{ public_invite_url }}</a></p>
+</section>
+{% endblock %}

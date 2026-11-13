@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+{% block title %}Vinícius & Emanuelle | Nosso Casamento{% endblock %}
+{% block content %}
+<section class="hero" id="inicio">
+  <div class="hero-content">
+    <p class="hero-couple">Vinícius &amp; Emanuelle</p>
+    <h1>Nosso grande<br><em>dia</em> está chegando</h1>
+    <p class="hero-copy">Com muita alegria, queremos compartilhar esse momento com você.</p>
+    <p class="hero-date">Mari – PB · <time datetime="2027-03-13T17:00:00-03:00">13/03/2027 às 17h</time></p>
+    <div class="hero-actions">
+      <a class="button button-light" href="{{ url_for('main.rsvp') }}">Confirmar presença</a>
+      <a class="button button-outline" href="#detalhes">Ver locais e como chegar</a>
+    </div>
+  </div>
+  <div class="hero-art">
+    <img src="{{ url_for('static', filename='img/monograma-ve.png') }}" alt="Monograma dos noivos, com as letras V e E entrelaçadas">
+  </div>
+</section>
+
+<section class="intro section" id="detalhes">
+  <p class="eyebrow">UM DIA PARA GUARDAR</p>
+  <h2>Onde vamos<br><em>celebrar</em></h2>
+  <p>Estamos preparando tudo com muito carinho e será uma felicidade ter você ao nosso lado.</p>
+  <div class="event-details">
+    <article>
+      <span class="detail-icon" aria-hidden="true">♡</span>
+      <h3>Cerimônia</h3>
+      <p><time datetime="2027-03-13T17:00:00-03:00">13 de março de 2027, às 17h</time><br>R. Francisco Rique Ferreira, 265<br>Mari - PB, 58345-000</p>
+      <a class="button button-outline" href="https://www.google.com/maps/search/?api=1&amp;query={{ 'R. Francisco Rique Ferreira, 265, Mari - PB, 58345-000'|urlencode }}" target="_blank" rel="noopener noreferrer" aria-label="Abrir local da cerimônia no Google Maps (nova aba)">Ver cerimônia no mapa</a>
+    </article>
+    <article>
+      <span class="detail-icon" aria-hidden="true">✧</span>
+      <h3>Recepção</h3>
+      <p>Logo após a cerimônia<br>R. Joaquim Francisco Galvao<br>Mari - PB</p>
+      <a class="button button-outline" href="https://www.google.com/maps/search/?api=1&amp;query={{ 'R. Joaquim Francisco Galvao, Mari - PB'|urlencode }}" target="_blank" rel="noopener noreferrer" aria-label="Abrir local da recepção no Google Maps (nova aba)">Ver recepção no mapa</a>
+    </article>
+  </div>
+</section>
+
+<section class="gift-section section" id="presentes">
+  <p class="eyebrow">UM CARINHO PARA NOSSA NOVA VIDA</p>
+  <h2>Lista de presentes</h2>
+  <p class="section-lead">Sua presença é o nosso maior presente. Reunimos aqui a cota para a lua de mel e as sugestões de presentes para nossa nova vida.</p>
+
+  <div class="honeymoon-teaser">
+    <div class="honeymoon-teaser-copy">
+      <p class="eyebrow">UMA AVENTURA A DOIS</p>
+      <h3>Cota para lua de mel</h3>
+      <p>Estamos sonhando com dias de descanso, passeios e boas histórias. Escolha uma cota por Pix ou presenteie com cartão de crédito.</p>
+      <a class="button button-primary" href="{{ url_for('main.honeymoon') }}">Ver cota da lua de mel</a>
+    </div>
+    <div class="honeymoon-teaser-art">
+      <img src="{{ url_for('static', filename='img/lua-de-mel.png') }}" alt="Vinícius e Emanuelle na praia ao pôr do sol">
+    </div>
+  </div>
+
+  <h3 class="gift-subheading">Presentes físicos e sugestões</h3>
+  <aside class="gift-guidance" aria-label="Orientações para reservar e enviar presentes">
+    <div>
+      <h4>Antes de reservar seu presente</h4>
+      <p>Ao reservar o presente, vamos saber quem reservou o item e ele ficará indisponível para outros convidados.</p>
+      <p>Na hora da compra, use o endereço de entrega informado aqui para que o presente seja entregue em nosso endereço. Confira o preço, a disponibilidade e o frete na loja antes de concluir o pedido.</p>
+      <p class="gift-guidance-help">Se mudar de ideia ou não conseguir concluir a compra, avise a gente para liberarmos o presente novamente.</p>
+    </div>
+    <div class="gift-delivery">
+      <h4>Endereço para entrega</h4>
+      <address>Rua Rui Carneiro, nº 285<br>Casa · Bairro Silvino Costa<br>Mari – PB<br>CEP 58345-000</address>
+    </div>
+  </aside>
+  {% if gifts %}<div class="gift-grid">
+    {% for gift in gifts %}
+      <article class="gift-card {% if gift.status == 'reserved' %}is-reserved{% endif %}">
+        {% set product_image = url_for('main.gift_image', filename=gift.image_filename) if gift.image_filename else (url_for('static', filename='img/' ~ product_images.get(gift.external_url)) if product_images.get(gift.external_url) else None) %}
+        <div class="gift-illustration{% if product_image %} has-product-image{% endif %}" {% if not product_image %}aria-hidden="true"{% endif %}>
+          {% if product_image %}<img src="{{ product_image }}" alt="">
+          {% else %}{{ gift.emoji }}{% endif %}
+        </div>
+        <div class="gift-info">
+          {% set guest_name_errors = reserve_form.guest_name.errors if reserve_error_gift_id == gift.id else [] %}
+          {% set guest_name_value = reserve_form.guest_name.data if reserve_error_gift_id == gift.id else '' %}
+          <h3>{{ gift.title }}</h3>
+          <p>{{ gift.description }}</p>
+          {% if gift.amount_cents %}
+            <strong>{% if gift.gift_type == "marketplace" %}Preço aproximado: {% endif %}R$ {{ '%.2f'|format(gift.amount_cents / 100)|replace('.', ',') }}</strong>
+          {% endif %}
+          <div class="gift-actions">
+          {% if gift.gift_type == "marketplace" %}
+            {% if gift.status == 'reserved' %}
+              {% if reservation_success_gift_id == gift.id %}
+                <span class="reserved-label reservation-success" role="status">Reserva registrada. A compra deve ser finalizada diretamente na loja.</span>
+              {% else %}
+                <span class="reserved-label reservation-success">Presente reservado</span>
+              {% endif %}
+            {% else %}
+              {% if gift.external_url %}<a class="button button-outline" href="{{ gift.external_url }}" target="_blank" rel="noopener noreferrer">Ver produto no marketplace</a>
+              {% else %}<span class="reserved-label">Link do produto em breve</span>{% endif %}
+              <form method="post" action="{{ url_for('main.reserve_gift', gift_id=gift.id) }}" class="reserve-form" data-scroll-return="{{ url_for('main.index') }}" novalidate>
+                {{ reserve_form.csrf_token }}
+                <label class="sr-only" for="guest-{{ gift.id }}">Seu nome para reservar este presente</label>
+                <input id="guest-{{ gift.id }}" name="guest_name" type="text" maxlength="120" minlength="2" placeholder="Seu nome" value="{{ guest_name_value or '' }}" required {% if guest_name_errors %}aria-invalid="true" aria-describedby="guest-error-{{ gift.id }}" autofocus{% endif %}>
+                {% if guest_name_errors %}<small class="field-error" id="guest-error-{{ gift.id }}" role="alert">{{ guest_name_errors[0] }}</small>{% endif %}
+                <button class="button button-outline" type="submit">Reservar este presente</button>
+              </form>
+            {% endif %}
+          {% elif gift.status == 'reserved' %}
+            {% if reservation_success_gift_id == gift.id %}
+              <span class="reserved-label reservation-success" role="status">Reserva registrada. A compra deve ser finalizada diretamente na loja.</span>
+            {% else %}
+              <span class="reserved-label reservation-success">Presente escolhido ♡</span>
+            {% endif %}
+          {% else %}
+            <form method="post" action="{{ url_for('main.reserve_gift', gift_id=gift.id) }}" class="reserve-form" data-scroll-return="{{ url_for('main.index') }}" novalidate>
+              {{ reserve_form.csrf_token }}
+              <label class="sr-only" for="guest-{{ gift.id }}">Seu nome</label>
+              <input id="guest-{{ gift.id }}" name="guest_name" type="text" maxlength="120" minlength="2" placeholder="Seu nome" value="{{ guest_name_value or '' }}" required {% if guest_name_errors %}aria-invalid="true" aria-describedby="guest-error-{{ gift.id }}" autofocus{% endif %}>
+              {% if guest_name_errors %}<small class="field-error" id="guest-error-{{ gift.id }}" role="alert">{{ guest_name_errors[0] }}</small>{% endif %}
+              <button class="button button-outline" type="submit">Escolher presente</button>
+            </form>
+          {% endif %}
+          </div>
+        </div>
+      </article>
+    {% endfor %}
+  </div>{% else %}<p class="admin-empty">Em breve, adicionaremos sugestões de presentes.</p>{% endif %}
+</section>
+
+<section class="rsvp-banner">
+  <div><p class="eyebrow">CONTAMOS COM VOCÊ</p><h2>Vamos celebrar juntos?</h2><p>Ajude-nos a organizar esse dia confirmando sua presença.</p></div>
+  <a class="button button-light" href="{{ url_for('main.rsvp') }}">Confirmar presença</a>
+</section>
+{% endblock %}

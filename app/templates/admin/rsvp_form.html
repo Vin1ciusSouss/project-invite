@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Corrigir confirmação | Vinícius & Emanuelle{% endblock %}
+{% block content %}
+<section class="form-page">
+  <a class="back-link" href="{{ url_for('admin.dashboard') }}">← Voltar ao painel</a>
+  <p class="eyebrow">GESTÃO DE CONVIDADOS</p>
+  <h1>Corrigir <em>confirmação</em></h1>
+  <p class="section-lead">Atualize quem irá comparecer para o convite de {{ rsvp.guest_name }}. Desmarcar todos registra ausência.</p>
+  <form method="post" class="rsvp-form" data-scroll-return="{{ url_for('admin.dashboard') }}" novalidate>
+    {{ form.hidden_tag() }}
+    <div class="invite-guest-list">
+      <p class="invite-guest-title">Convidados deste convite</p>
+      {% for guest_name in roster %}
+      <label class="invitee-option" for="rsvp-guest-{{ loop.index }}">
+        <input id="rsvp-guest-{{ loop.index }}" type="checkbox" name="attendee_names" value="{{ guest_name }}" {% if guest_name in selected_names %}checked{% endif %}>
+        <span>{{ guest_name }}</span>
+      </label>
+      {% endfor %}
+      {% if attendee_error %}<small class="field-error" role="alert">{{ attendee_error }}</small>{% endif %}
+    </div>
+    <div class="field">
+      {{ form.message.label }}
+      {{ form.message(rows="4", placeholder="Deixe uma mensagem, se desejar...") }}
+      {% for error in form.message.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+    </div>
+    {{ form.submit(class_="button button-primary") }}
+  </form>
+</section>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}{{ page_title }} | Vinícius & Emanuelle{% endblock %}
+{% block content %}
+<section class="form-page">
+  <a class="back-link" href="{{ url_for('admin.dashboard') }}">← Voltar ao painel</a>
+  <p class="eyebrow">LISTA DE CONVIDADOS</p>
+  <h1>{{ page_title }}</h1>
+  <p class="section-lead">Defina um nome de referência para organização e cadastre os nomes completos vinculados a este convite, um por linha.</p>
+  <form method="post" class="rsvp-form" data-scroll-return="{{ url_for('admin.dashboard') }}" novalidate>
+    {{ form.hidden_tag() }}
+    <div class="field">
+      {{ form.reference_name.label }}
+      {{ form.reference_name(placeholder="Ex.: Vinicius") }}
+      <small class="field-help">Os convidados usarão o link privado gerado para este grupo, exibido no painel depois de salvar.</small>
+      {% for error in form.reference_name.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+    </div>
+    <div class="field">
+      {{ form.guest_names.label }}
+      {{ form.guest_names(rows="8", placeholder="Vinicius Sousa\nEmanuelle Nascimento") }}
+      <small class="field-help">Cada pessoa deve ficar em uma linha e ter nome e sobrenome.</small>
+      {% for error in form.guest_names.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+    </div>
+    {{ form.submit(class_="button button-primary") }}
+  </form>
+</section>
+{% endblock %}

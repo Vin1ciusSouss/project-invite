@@ -1,0 +1,68 @@
+# Segredos: somente modelos vazios podem ser versionados.
+.env
+.env.*
+.envrc
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+credentials*.json
+service-account*.json
+
+# Dados locais, de produção e backups.
+instance/
+casamento-dados/
+backups/
+backup/
+uploads/
+exports/
+exportacoes/
+*.xlsx
+*.xls
+*.db
+*.db-*
+*.sqlite
+*.sqlite-*
+*.sqlite3
+*.sqlite3-*
+*.bak
+*.backup
+
+# Imagens enviadas pelo admin não são código.
+# Preservar somente as três imagens iniciais necessárias ao site.
+app/static/img/presentes/*
+!app/static/img/presentes/garrafa-termica.png
+!app/static/img/presentes/jogo-assadeira.png
+!app/static/img/presentes/jogo-toalha.png
+
+# Ambientes, cache e relatórios de execução.
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+*.log
+*.log.*
+
+# Pacotes de publicação são gerados novamente, não commitados.
+dist/
+*.zip
+*.tar
+*.tar.gz
+*.7z
+
+# Configurações pessoais do editor e ferramentas.
+.vscode/
+.idea/
+.codex/
+.agents/
+.DS_Store
+Thumbs.db
