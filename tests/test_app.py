@@ -396,7 +396,7 @@ class WeddingSiteTests(unittest.TestCase):
             original_token = db.session.get(InviteGroup, 1).invite_token
         self.login_admin()
         dashboard = self.client.get("/admin/")
-        self.assertIn("Copiar link".encode(), dashboard.data)
+        self.assertIn("Link alternativo".encode(), dashboard.data)
         response = self.client.post("/admin/convites/1/renovar-link")
         self.assertEqual(response.status_code, 302)
         with self.app.app_context():

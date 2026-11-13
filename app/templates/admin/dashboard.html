@@ -167,19 +167,4 @@
     bindConfirmation(".delete-rsvp-form", "delete-rsvp-dialog", "keep-rsvp", "confirm-delete-rsvp");
   });
 </script>
-<script>
-  document.querySelectorAll(".copy-invite-link").forEach((button) => {
-    button.addEventListener("click", async () => {
-      const feedback = button.parentElement.querySelector(".copy-link-feedback");
-      try {
-        await navigator.clipboard.writeText(`${window.location.origin}${button.dataset.copyPath}`);
-        feedback.classList.remove("is-error");
-        feedback.textContent = "Link copiado";
-      } catch {
-        feedback.classList.add("is-error");
-        feedback.textContent = "Não foi possível copiar. Abra o link e copie o endereço do navegador.";
-      }
-    });
-  });
-</script>
 {% endblock %}

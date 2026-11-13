@@ -23,6 +23,7 @@
 }
 
 * { box-sizing: border-box; }
+html, body { max-width: 100%; overflow-x: hidden; }
 html { scroll-behavior: smooth; scroll-padding-top: 24px; }
 html.is-restoring-scroll { scroll-behavior: auto !important; }
 html.is-restoring-scroll body { visibility: hidden; }
@@ -316,6 +317,32 @@ input[aria-invalid="true"]:focus, select[aria-invalid="true"]:focus, textarea[ar
   .hero { padding-right: 18px; padding-left: 18px; }
   .hero-date { gap: 7px; font-size: 10px; }
   .hero-date span { width: 22px; }
+}
+
+/* Ajustes extras para aparelhos estreitos e zoom do navegador. */
+@media (max-width: 480px) {
+  .site-header nav { overflow-x: auto; justify-content: flex-start; max-width: 100%; padding-bottom: 2px; scrollbar-width: thin; }
+  .site-header nav a { flex: 0 0 auto; }
+  .hero-actions { flex-direction: column; align-items: stretch; }
+  .hero-actions .button { width: 100%; }
+  .section, .form-page, .honeymoon-page { padding-right: 16px; padding-left: 16px; }
+  .rsvp-form { padding: 16px; }
+  .gift-guidance { padding: 18px; }
+  .gift-guidance h4 { font-size: 21px; }
+  .gift-info { padding: 17px; }
+  .honeymoon-amount-options { grid-template-columns: 1fr; }
+  .admin-page { padding-right: 12px; padding-left: 12px; }
+  .admin-heading h1 { overflow-wrap: anywhere; }
+  .admin-section-heading .button, .admin-heading > form .button { width: 100%; }
+  .admin-table { min-width: 760px; }
+  .invite-print-page { padding-right: 16px; padding-left: 16px; }
+  .invite-print-card { max-width: min(340px, 100%); }
+}
+
+@media (min-width: 481px) and (max-width: 760px) {
+  .site-header { align-items: flex-start; }
+  .site-header nav { justify-content: flex-end; }
+  .admin-table { min-width: 820px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

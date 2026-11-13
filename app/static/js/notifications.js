@@ -53,8 +53,13 @@
   window.addEventListener("pageshow", () => {
     if (restorePosition && !userInteracted) {
       document.documentElement.classList.add("is-restoring-scroll");
-      window.scrollTo(restorePosition.x, restorePosition.y);
-      document.documentElement.classList.remove("is-restoring-scroll");
+      const applyRestoredPosition = () => {
+        window.scrollTo({ left: restorePosition.x, top: restorePosition.y, behavior: "auto" });
+        document.documentElement.classList.remove("is-restoring-scroll");
+      };
+      // Images and fonts can change the document height after pageshow.
+      requestAnimationFrame(() => requestAnimationFrame(applyRestoredPosition));
+      window.setTimeout(applyRestoredPosition, 120);
     }
   });
 
@@ -68,9 +73,7 @@
     }
     document.querySelectorAll(".flash").forEach((notification) => {
       notification.querySelector(".flash-close")?.addEventListener("click", () => notification.remove());
-      if (notification.classList.contains("success")) {
-        window.setTimeout(() => notification.remove(), 7000);
-      }
+      window.setTimeout(() => notification.remove(), 3000);
     });
   });
 })();
